@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Security Operations Dashboard</title>
+
+    <style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        color: #e5e7eb;
+    }
+
+    .header {
+        background: #0b1220;
+        color: #38bdf8;
+        padding: 14px 20px;
+        font-size: 18px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        border-bottom: 1px solid #1f2937;
+    }
+
+    .main {
+        padding: 20px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 14px;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        transition: 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        border-color: #38bdf8;
+    }
+
+    .value {
+        font-size: 22px;
+        margin-top: 6px;
+        font-weight: bold;
+    }
+
+    .good { color: #22c55e; }
+    .warn { color: #facc15; }
+    .bad { color: #ef4444; }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 18px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    th {
+        background: #0b1220;
+        color: #38bdf8;
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    td {
+        padding: 10px;
+        text-align: center;
+        font-size: 13px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    tr:hover {
+        background: rgba(56,189,248,0.1);
+    }
+
+    .tag {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .normal {
+        background: rgba(34,197,94,0.15);
+        color: #22c55e;
+    }
+
+    .suspicious {
+        background: rgba(250,204,21,0.15);
+        color: #facc15;
+    }
+
+    .attacker {
+        background: rgba(239,68,68,0.15);
+        color: #ef4444;
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0.4; }
+        100% { opacity: 1; }
+    }
+
+    .log {
+    margin-top: 18px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(56,189,248,0.25);
+    padding: 18px;
+
+    height: 340px;
+    overflow-y: auto;
+
+    font-size: 15px;
+    line-height: 1.9;
+
+    border-radius: 14px;
+    color: #e2e8f0;
+
+    font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
+}
+
+/* nicer scrollbar */
+.log::-webkit-scrollbar {
+    width: 8px;
+}
+
+.log::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+}
+
+.log::-webkit-scrollbar-thumb {
+    background: rgba(56,189,248,0.4);
+    border-radius: 10px;
+}
+
+.log::-webkit-scrollbar-thumb:hover {
+    background: rgba(56,189,248,0.7);
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    Security Operations Dashboard 
+</div>
+
+<div class="main">
+
+    <div class="grid">
+        <div class="card">Active Users <div class="value" id="users">0</div></div>
+        <div class="card">Threats <div class="value bad" id="threats">0</div></div>
+        <div class="card">Status <div class="value good" id="status">OK</div></div>
+        <div class="card">Risk <div class="value" id="risk">0</div></div>
+    </div>
+
+    <table id="table"></table>
+
+    <div class="log" id="logs"></div>
+
+</div>
+
+<script>
+
+let lastUsers = new Set();
+let lastLogTime = 0;
+
+function addLog(msg) {
+    let logs = document.getElementById("logs");
+    let time = new Date().toLocaleTimeString();
+
+    let entry = document.createElement("div");
+
+    entry.style.padding = "6px 0";
+    entry.style.borderBottom = "1px solid rgba(255,255,255,0.08)";
+    entry.style.display = "flex";
+    entry.style.gap = "10px";
+
+    let timeSpan = document.createElement("span");
+    timeSpan.innerText = `[${time}]`;
+    timeSpan.style.color = "#38bdf8";
+    timeSpan.style.minWidth = "90px";
+
+    let msgSpan = document.createElement("span");
+    msgSpan.innerText = msg;
+
+    entry.appendChild(timeSpan);
+    entry.appendChild(msgSpan);
+
+    logs.appendChild(entry);
+    logs.scrollTop = logs.scrollHeight;
+}
+
+function pulseElement(id) {
+    let el = document.getElementById(id);
+    el.style.transform = "scale(1.1)";
+    el.style.transition = "0.2s";
+    setTimeout(() => {
+        el.style.transform = "scale(1)";
+    }, 200);
+}
+
+async function loadData() {
+
+    try {
+        let res = await fetch('/dashboard-data');
+        let data = await res.json();
+
+        let table = document.getElementById("table");
+
+        table.innerHTML = `
+            <tr>
+                <th>User</th>
+                <th>Requests</th>
+                <th>Risk</th>
+                <th>Status</th>
+            </tr>
+        `;
+
+        let threats = 0;
+        let totalRisk = 0;
+
+        let currentUsers = new Set();
+
+        data.forEach(user => {
+
+            currentUsers.add(user.user);
+            totalRisk += user.risk;
+
+            let cls = "normal";
+
+            if (user.status === "SUSPICIOUS") cls = "suspicious";
+
+            if (user.status === "ATTACKER") {
+                cls = "attacker";
+                threats++;
+
+                addLog("🚨 Attack detected from " + user.user);
+            }
+
+            let row = `
+                <tr>
+                    <td>${user.user}</td>
+                    <td>${user.requests}</td>
+                    <td>${user.risk}</td>
+                    <td><span class="tag ${cls}">${user.status}</span></td>
+                </tr>
+            `;
+
+            table.innerHTML += row;
+        });
+
+        // 🔥 update counters
+        document.getElementById("users").innerText = data.length;
+        document.getElementById("threats").innerText = threats;
+
+        let avg = data.length ? (totalRisk / data.length).toFixed(2) : 0;
+        document.getElementById("risk").innerText = avg;
+
+        document.getElementById("status").innerText =
+            threats > 0 ? "ATTENTION REQUIRED" : "OK";
+
+        // 🎯 pulse effects (visual activity feedback)
+        pulseElement("users");
+        pulseElement("threats");
+        pulseElement("risk");
+
+        // 🧠 detect NEW users only
+        currentUsers.forEach(u => {
+            if (!lastUsers.has(u)) {
+                addLog("🟢 New user detected: " + u);
+            }
+        });
+
+        lastUsers = currentUsers;
+
+    } catch (err) {
+        addLog("⚠️ Dashboard fetch error");
+    }
+}
+
+/* START LOOP */
+loadData();
+setInterval(loadData, 2000);
+
+
+</script>
+
+</body>
+</html>
