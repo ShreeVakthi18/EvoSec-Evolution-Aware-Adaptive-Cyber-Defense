@@ -156,9 +156,11 @@ User accesses common endpoints with stable behavior. No risk detected.
 User → API → Tracking → Analysis → Normal  
 
 **Dashboard**
+
 <img src="https://github.com/user-attachments/assets/2204e120-b6ed-4e7f-bb90-4c0b49fadf10" width="800"/>
 
 **Index**
+
 <img src="https://github.com/user-attachments/assets/b9d6bd4b-cf02-4ab7-b7e4-6381bf0f9831" width="800"/>
 
 ---
@@ -170,9 +172,11 @@ User shows unusual patterns such as repeated or sensitive access.
 User → API → Tracking → Analysis → Suspicious  
 
 **Dashboard**
+
 <img src="https://github.com/user-attachments/assets/d76d034b-0163-4e26-8795-66dba5ecb6c3" width="800"/>
 
 **Index**
+
 <img src="https://github.com/user-attachments/assets/de46235b-c823-4b14-85b6-d9e8b90a02e7" width="800"/>
 
 ---
@@ -184,9 +188,11 @@ User repeatedly accesses critical endpoints or performs high-risk actions.
 User → API → Tracking → Analysis → Attacker → Blocked  
 
 **Dashboard**
+
 <img src="https://github.com/user-attachments/assets/61394294-038e-46c7-b0b1-8904f3ba0b53" width="800"/>
 
 **Index**
+
 <img src="https://github.com/user-attachments/assets/8866af98-12d8-49b3-82be-71f38f1cb12f" width="800"/>
 
 ---
