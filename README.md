@@ -159,9 +159,28 @@ I built EvoSec because I realized something that most security systems completel
 
 <img src="https://github.com/user-attachments/assets/2204e120-b6ed-4e7f-bb90-4c0b49fadf10" width="800"/>
 
+#### How the Dashboard Works — Normal User
+
+- The **Active Users** counter increments as soon as the middleware detects a new IP and appends their first action to `user_behavior`.
+- The **Threats** counter stays at `0` and the **Status** card reads `OK` in green — no anomalies have been detected.
+- The **Risk** card displays the session average risk score across all tracked users, which remains near zero when all sessions are clean.
+- In the **user table**, this user appears with a 🟢 `NORMAL` badge — rendered by the `normal` CSS class — and their request count increments in real time as they continue browsing.
+- The **activity log** at the bottom prints a single `🟢 New user detected` entry when they first appear, and nothing further — because no threat events are fired for normal behavior.
+- The dashboard polls `/dashboard-data` every 2 seconds. Each poll rebuilds the table from scratch using the latest data returned by the risk engine, so the request count you see is always live and accurate.
+
 **Index**
 
 <img src="https://github.com/user-attachments/assets/b9d6bd4b-cf02-4ab7-b7e4-6381bf0f9831" width="800"/>
+
+#### How the Index Works — Normal User
+
+- The index page (`index.html`) is a simulated **Banking Control Panel** — a realistic-looking target application that the system is protecting.
+- It exposes six action buttons: **Login**, **Search**, **Profile**, **Admin**, **Delete User**, and **Transfer Money** — each mapped directly to a backend API route.
+- When a normal user clicks **Login**, **Search**, or **Profile**, the browser fires a `GET` request to the corresponding safe endpoint.
+- Each click is intercepted by the FastAPI middleware before reaching the route handler. The middleware records the path and HTTP method into `user_behavior` for that user's IP.
+- The risk engine evaluates the updated history and returns a low score — none of these endpoints are in the critical list, and no destructive methods are being used.
+- The route handler responds normally and the JSON response is displayed in the output box on the page — the user sees `{"message": "Login page"}` or similar with zero delay.
+- Every interaction through this panel is what feeds the behavioral history that the risk engine reads — making the index page the live entry point through which all threat scenarios are triggered.
 
 ---
 
@@ -178,9 +197,27 @@ I built EvoSec because I realized something that most security systems completel
 
 <img src="https://github.com/user-attachments/assets/d76d034b-0163-4e26-8795-66dba5ecb6c3" width="800"/>
 
+#### How the Dashboard Works — Suspicious User
+
+- The user's row in the table transitions from the 🟢 `NORMAL` badge to the 🟡 `SUSPICIOUS` badge — rendered by the `suspicious` CSS class with a yellow color — as soon as their risk score crosses the threshold of 3.
+- The **Risk** card value increases visibly as the session average climbs, and a brief scale-up pulse animation fires on the card to draw attention to the change.
+- The **Threats** counter remains at `0` because this user has not yet crossed into attacker territory — the system has identified elevated risk but not confirmed hostile intent.
+- **Status** still reads `OK` — this is intentional. The system is applying friction silently without escalating to a full alert, giving no outward signal that anything has changed.
+- The activity log does not fire a threat alert for suspicious users — only new user detections and confirmed attacker events appear there — keeping the log clean and high-signal.
+- Behind the scenes, the middleware has already started injecting a `time.sleep(1)` delay into every response for this user. This is invisible on the dashboard but is actively degrading the speed of any automated tool the user might be running.
+
 **Index**
 
 <img src="https://github.com/user-attachments/assets/de46235b-c823-4b14-85b6-d9e8b90a02e7" width="800"/>
+
+#### How the Index Works — Suspicious User
+
+- A suspicious session typically begins the same way as a normal one — the user clicks **Login**, **Search**, or **Profile** through the index panel, which registers as safe behavior.
+- The behavioral shift happens when they begin clicking **Admin** or attempting **Delete User** or **Transfer Money** without following a legitimate flow — for example, jumping directly to `/admin/dashboard` without a prior `/login` in their history.
+- Each of these clicks passes through the middleware, which updates the behavioral history and re-runs the risk engine. The critical endpoint detection flags `/admin/dashboard`, `/admin/delete-user`, and `/payment/transfer` immediately.
+- Once the risk score reaches 3, the middleware begins inserting a 1-second sleep before every response. From the index page, this means button clicks feel noticeably slower — the output box takes a second longer to populate than it did before.
+- The user sees normal-looking responses in the output box — `{"message": "Admin dashboard"}` — with no error, no block, and no indication that their behavior has been flagged. The friction is completely invisible.
+- This delay is specifically designed to degrade the effectiveness of automated scripts that fire rapid sequential requests, without alerting a human attacker that detection has already begun.
 
 ---
 
@@ -198,9 +235,27 @@ I built EvoSec because I realized something that most security systems completel
 
 <img src="https://github.com/user-attachments/assets/61394294-038e-46c7-b0b1-8904f3ba0b53" width="800"/>
 
+#### How the Dashboard Works — High-Risk / Attacker
+
+- The moment the risk engine returns a score of 6 or above, `classify_user()` returns `"ATTACKER"` and the dashboard immediately reflects the escalation.
+- The user's row transitions to the 🔴 `ATTACKER` badge — rendered with the `attacker` CSS class — which triggers the blinking animation defined in the stylesheet, making the threat visually unmissable at a glance.
+- The **Threats** counter increments by 1 and the **Status** card switches from `OK` to `ATTENTION REQUIRED` in red — signaling that immediate analyst review is warranted.
+- The **activity log** fires a `🚨 Attack detected from [IP]` entry every poll cycle while this user remains classified as an attacker, ensuring the event is prominently visible and timestamped in the live feed.
+- The **Risk** card value spikes upward and the pulse animation fires on both the Threats and Risk cards simultaneously, giving a physical sense of urgency to the dashboard state.
+- All of this happens without the attacker receiving any indication on their end that their classification has changed — the dashboard is a one-way intelligence window.
+
 **Index**
 
 <img src="https://github.com/user-attachments/assets/8866af98-12d8-49b3-82be-71f38f1cb12f" width="800"/>
+
+#### How the Index Works — High-Risk / Attacker
+
+- By the time a user is classified as an attacker, they have already interacted with multiple critical endpoints through the index panel — typically a combination of **Admin**, **Delete User**, and **Transfer Money** clicks that have driven their risk score above 6.
+- When they now attempt to click any of those critical buttons again, the middleware intercepts the request before it reaches the route handler and evaluates the current classification.
+- Because the path contains `admin`, `delete`, or `payment` and the user is classified as `ATTACKER`, the middleware immediately returns a `403 Access Denied 🚫` JSON response — the route handler is never called and the real data is never touched.
+- In the output box on the index page, the attacker sees `{"message": "Access Denied 🚫"}` — which in a full deception-layer implementation would instead be replaced with a plausible fake response from a controlled honeypot environment, keeping the attacker engaged and unaware that they have been isolated.
+- Safe endpoints like **Login**, **Search**, and **Profile** continue to respond normally even for attacker-classified users — this is intentional. Blocking everything would immediately reveal that detection has occurred. By only locking down critical paths, the system maintains the illusion of normal operation.
+- Every click the attacker makes through the index panel continues to feed their behavioral history, allowing the risk engine to track the full arc of the attack even after classification — building a complete record of what they attempted and in what order.
 
 ---
 
