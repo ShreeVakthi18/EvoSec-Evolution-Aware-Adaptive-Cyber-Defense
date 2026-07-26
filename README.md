@@ -131,6 +131,19 @@ I built EvoSec because I realized something that most security systems completel
 
 ---
 
+## Demo Video
+
+See EvoSec in action, including:
+
+- Automatic Critical Asset Detection
+- Behavioral Evolution Tracking
+- Dynamic Risk Scoring
+- Adaptive Response (Normal → Suspicious → Attacker)
+- Live SOC Dashboard
+- Real-Time Threat Classification
+
+**Watch the Project Demo:** [EvoSec Demo](https://youtu.be/ADvxDcGglfs)
+
 ## Results
 
 ### Index Page
@@ -387,7 +400,10 @@ Once the cumulative risk threshold is exceeded:
 - Critical endpoints return **HTTP 403 – Access Denied**
 - Dashboard displays the threat in real time.
 
-## What Makes This Different
+  
+
+  
+  ## What Makes This Different
 
 - Most intrusion detection systems I have studied react to individual events — they look at one request, check it against a ruleset, and either allow or block it.
 - This approach will always fail against a patient attacker who moves slowly and stays just below the detection threshold for each individual action.
