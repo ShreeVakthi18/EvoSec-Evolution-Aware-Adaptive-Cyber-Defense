@@ -61,7 +61,7 @@ The adaptive security engine correctly recognised legitimate user behaviour with
 
 ### Banking Panel
 
-![TC-01 Banking Panel](screenshots/TC01_bankingpanel.png)
+![TC-01 Banking Panel](screenshots/TC01_banking panel.png)
 
 ### Dashboard
 
