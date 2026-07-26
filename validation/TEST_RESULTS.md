@@ -61,7 +61,7 @@ The adaptive security engine correctly recognised legitimate user behaviour with
 
 ### Banking Panel
 
-![TC-01 Banking Panel](screenshots/TC01_banking panel.png)
+![TC-01 Banking Panel](screenshots/TC01_bankingpanel.png)
 
 ### Dashboard
 
@@ -262,11 +262,9 @@ The framework successfully prevented access to sensitive resources by returning 
 
 ### Banking Panel
 
-![TC-04 Access Denied](screenshots/TC04_AccessDenied.png)
+![TC-04 Access Denied](screenshots/TC04_bankingpanel.png)
 
-### Dashboard
 
-![TC-04 Dashboard](screenshots/TC04_Dashboard.png)
 
 ---
 
