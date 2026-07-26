@@ -61,11 +61,11 @@ The adaptive security engine correctly recognised legitimate user behaviour with
 
 ### Banking Panel
 
-![TC-01 Banking Panel](screenshots/TC01_BankingPanel.png)
+![TC-01 Banking Panel](screenshots/TC01_bankingpanel.png)
 
 ### Dashboard
 
-![TC-01 Dashboard](screenshots/TC01_Dashboard.png)
+![TC-01 Dashboard](screenshots/TC01_dashboard.png)
 
 ---
 
@@ -122,11 +122,11 @@ The framework correctly classified the session as **SUSPICIOUS**, demonstrating 
 
 ### Banking Panel
 
-![TC-02 Banking Panel](screenshots/TC02_BankingPanel.png)
+![TC-02 Banking Panel](screenshots/TC02_bankingpanel.png)
 
 ### Dashboard
 
-![TC-02 Dashboard](screenshots/TC02_Dashboard.png)
+![TC-02 Dashboard](screenshots/TC02_dashboard.png)
 
 ---
 
@@ -190,11 +190,11 @@ The dashboard continuously generated attack alerts while monitoring the attacker
 
 ### Banking Panel
 
-![TC-03 Banking Panel](screenshots/TC03_BankingPanel.png)
+![TC-03 Banking Panel](screenshots/TC03_bankingpanel.png)
 
 ### Dashboard
 
-![TC-03 Dashboard](screenshots/TC03_Dashboard.png)
+![TC-03 Dashboard](screenshots/TC03_dashboard.png)
 
 The dashboard continuously generated alerts similar to:
 
@@ -325,11 +325,11 @@ All dashboard components refreshed automatically without requiring manual page r
 
 ### Banking Panel
 
-![TC-05 Banking Panel](screenshots/TC05_BankingPanel.png)
+![TC-05 Banking Panel](screenshots/TC05_bankingpanel.png)
 
 ### Dashboard
 
-![TC-05 Dashboard](screenshots/TC05_Dashboard.png)
+![TC-05 Dashboard](screenshots/TC05_dashboard.png)
 
 ---
 
