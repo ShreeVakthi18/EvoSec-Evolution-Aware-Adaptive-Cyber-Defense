@@ -1,5 +1,14 @@
 # Validation Results
 
+**Validation Date:** July 2026
+
+**Environment**
+
+- Operating System: Windows 11
+- Framework: FastAPI
+- Language: Python 3.14
+- Browser: Google Chrome
+
 ---
 
 # TC-01 – Normal User Behaviour
@@ -44,15 +53,19 @@ Observed dashboard metrics:
 - **Average Risk Score:** 1.00
 - **User Classification:** NORMAL
 
-The adaptive security engine correctly recognised the activity as legitimate and did not apply any defensive restrictions.
+The adaptive security engine correctly recognised legitimate user behaviour without applying any defensive restrictions.
 
 ---
 
 ## Evidence
 
+### Banking Panel
+
+![TC-01 Banking Panel](screenshots/TC01_BankingPanel.png)
+
 ### Dashboard
 
-![TC-01 Dashboard](screenshots/TC01_Normal.png)
+![TC-01 Dashboard](screenshots/TC01_Dashboard.png)
 
 ---
 
@@ -60,11 +73,13 @@ The adaptive security engine correctly recognised the activity as legitimate and
 
 ✅ **PASS**
 
+---
+
 # TC-02 – Suspicious Behaviour Detection
 
 ## Objective
 
-Validate that the adaptive risk engine identifies suspicious user behaviour and applies adaptive security controls before escalating to an attacker classification.
+Validate that the adaptive risk engine identifies suspicious user behaviour before escalating the session to an attacker.
 
 ---
 
@@ -73,7 +88,7 @@ Validate that the adaptive risk engine identifies suspicious user behaviour and 
 1. Launch the Banking Control Panel.
 2. Launch the Security Operations Dashboard.
 3. Perform a controlled sequence of requests to privileged administrative endpoints.
-4. Observe the user's cumulative risk score and security classification.
+4. Observe the cumulative risk score and user classification.
 
 ---
 
@@ -81,7 +96,7 @@ Validate that the adaptive risk engine identifies suspicious user behaviour and 
 
 - User is classified as **SUSPICIOUS**.
 - Risk score exceeds the suspicious threshold.
-- Dashboard updates the user's security status.
+- Dashboard updates automatically.
 - Adaptive security response is initiated.
 
 ---
@@ -99,15 +114,19 @@ Observed dashboard metrics:
 - **Risk Score:** 4
 - **User Classification:** SUSPICIOUS
 
-The framework correctly classified the session as **SUSPICIOUS**, demonstrating behavioural analysis before escalation to the attacker stage.
+The framework correctly classified the session as **SUSPICIOUS**, demonstrating behavioural analysis before attacker escalation.
 
 ---
 
 ## Evidence
 
+### Banking Panel
+
+![TC-02 Banking Panel](screenshots/TC02_BankingPanel.png)
+
 ### Dashboard
 
-![TC-02 Dashboard](screenshots/TC02_Suspicious.png)
+![TC-02 Dashboard](screenshots/TC02_Dashboard.png)
 
 ---
 
@@ -115,11 +134,13 @@ The framework correctly classified the session as **SUSPICIOUS**, demonstrating 
 
 ✅ PASS
 
+---
+
 # TC-03 – Attacker Detection & Adaptive Response
 
 ## Objective
 
-Validate that the Evolution-Aware Adaptive Cyber Defense framework detects malicious behaviour, classifies the session as an attacker, and continuously monitors ongoing attack activity.
+Validate that the framework detects malicious behaviour, classifies the session as an attacker, and continuously monitors ongoing attacks.
 
 ---
 
@@ -127,12 +148,12 @@ Validate that the Evolution-Aware Adaptive Cyber Defense framework detects malic
 
 1. Launch the Banking Control Panel.
 2. Launch the Security Operations Dashboard.
-3. Generate malicious activity by repeatedly accessing privileged endpoints:
+3. Generate malicious activity by repeatedly accessing:
    - Admin Dashboard
    - Delete User
    - Transfer Money
-4. Continue until the cumulative risk exceeds the attacker threshold.
-5. Observe the dashboard and live security log.
+4. Continue until the attacker threshold is exceeded.
+5. Observe dashboard updates and attack logs.
 
 ---
 
@@ -141,14 +162,14 @@ Validate that the Evolution-Aware Adaptive Cyber Defense framework detects malic
 - User is classified as **ATTACKER**.
 - Threat counter increases.
 - Dashboard status changes to **ATTENTION REQUIRED**.
-- Live attack alerts are generated continuously.
+- Real-time attack alerts are generated.
 - Adaptive security controls are activated.
 
 ---
 
 ## Actual Result
 
-The adaptive risk engine successfully identified repeated malicious requests and escalated the session to **ATTACKER**.
+The adaptive risk engine successfully detected repeated malicious requests and escalated the session to **ATTACKER**.
 
 ### Observed Dashboard Metrics
 
@@ -161,21 +182,21 @@ The adaptive risk engine successfully identified repeated malicious requests and
 | Risk Score | 6 |
 | User Classification | ATTACKER |
 
-The Security Operations Dashboard continuously generated real-time attack alerts while monitoring the attacker session, demonstrating continuous behavioural analysis and threat monitoring.
+The dashboard continuously generated attack alerts while monitoring the attacker session, demonstrating continuous behavioural analysis and adaptive threat detection.
 
 ---
 
 ## Evidence
 
+### Banking Panel
+
+![TC-03 Banking Panel](screenshots/TC03_BankingPanel.png)
+
 ### Dashboard
 
-![TC-03 Dashboard](screenshots/TC03_Attacker.png)
+![TC-03 Dashboard](screenshots/TC03_Dashboard.png)
 
-### Live Attack Monitoring
-
-![TC-03 Attack Alerts](screenshots/TC03_AttackAlerts.png)
-
-The dashboard repeatedly generated alerts similar to:
+The dashboard continuously generated alerts similar to:
 
 ```
 🚨 Attack detected from 127.0.0.1
@@ -189,11 +210,13 @@ confirming continuous monitoring of malicious activity.
 
 ✅ PASS
 
+---
+
 # TC-04 – Critical Endpoint Protection
 
 ## Objective
 
-Validate that the Evolution-Aware Adaptive Cyber Defense framework protects critical application endpoints by denying access after malicious behaviour is detected.
+Validate that the framework protects critical application endpoints by denying access after malicious behaviour is detected.
 
 ---
 
@@ -202,7 +225,7 @@ Validate that the Evolution-Aware Adaptive Cyber Defense framework protects crit
 1. Launch the Banking Control Panel.
 2. Launch the Security Operations Dashboard.
 3. Generate malicious activity until the user is classified as **ATTACKER**.
-4. Attempt to access protected endpoints:
+4. Attempt to access:
    - Admin Dashboard
    - Delete User
    - Transfer Money
@@ -215,7 +238,7 @@ Validate that the Evolution-Aware Adaptive Cyber Defense framework protects crit
 - User is classified as **ATTACKER**.
 - Adaptive security controls are activated.
 - Requests to critical endpoints are blocked.
-- The application returns **HTTP 403 – Access Denied**.
+- HTTP 403 **Access Denied** response is returned.
 
 ---
 
@@ -223,7 +246,7 @@ Validate that the Evolution-Aware Adaptive Cyber Defense framework protects crit
 
 After the adaptive risk engine classified the session as **ATTACKER**, subsequent requests to protected endpoints were automatically denied.
 
-The framework successfully prevented access to sensitive resources by returning an HTTP 403 response with an **Access Denied** message, demonstrating adaptive protection of critical application assets.
+The framework successfully prevented access to sensitive resources by returning an HTTP 403 response, demonstrating adaptive protection of critical application assets.
 
 ### API Response
 
@@ -237,9 +260,13 @@ The framework successfully prevented access to sensitive resources by returning 
 
 ## Evidence
 
-### Protected Endpoint Response
+### Banking Panel
 
 ![TC-04 Access Denied](screenshots/TC04_AccessDenied.png)
+
+### Dashboard
+
+![TC-04 Dashboard](screenshots/TC04_Dashboard.png)
 
 ---
 
@@ -247,6 +274,7 @@ The framework successfully prevented access to sensitive resources by returning 
 
 ✅ PASS
 
+---
 
 # TC-05 – Real-Time Security Dashboard Monitoring
 
@@ -259,31 +287,30 @@ Validate that the Security Operations Dashboard continuously reflects user activ
 ## Test Steps
 
 1. Launch the Security Operations Dashboard.
-2. Perform various user actions through the Banking Control Panel.
-3. Observe the dashboard while requests are processed.
-4. Verify that dashboard metrics and activity logs update automatically without refreshing the page.
+2. Perform user actions using the Banking Control Panel.
+3. Observe dashboard updates without refreshing the page.
 
 ---
 
 ## Expected Result
 
 - Active user count updates automatically.
-- User request count increases in real time.
-- Risk score changes based on user behaviour.
-- User classification changes dynamically (NORMAL → SUSPICIOUS → ATTACKER).
-- Threat counter updates immediately after attacker detection.
-- Live security events are displayed in the activity log.
+- Request count increases.
+- Risk score changes dynamically.
+- User classification transitions from **NORMAL → SUSPICIOUS → ATTACKER**.
+- Threat counter updates immediately.
+- Live security events are displayed.
 
 ---
 
 ## Actual Result
 
-The Security Operations Dashboard continuously monitored application activity and updated all security metrics automatically.
+The dashboard continuously monitored application activity and updated all security metrics automatically.
 
 During validation, the dashboard successfully displayed:
 
 - Active user count
-- Total processed requests
+- Processed request count
 - Dynamic cumulative risk score
 - User classification
 - Threat count
@@ -296,13 +323,13 @@ All dashboard components refreshed automatically without requiring manual page r
 
 ## Evidence
 
-### Live Dashboard
+### Banking Panel
+
+![TC-05 Banking Panel](screenshots/TC05_BankingPanel.png)
+
+### Dashboard
 
 ![TC-05 Dashboard](screenshots/TC05_Dashboard.png)
-
-### Real-Time Activity Log
-
-![TC-05 Activity Log](screenshots/TC05_LiveLogs.png)
 
 ---
 
@@ -310,12 +337,30 @@ All dashboard components refreshed automatically without requiring manual page r
 
 ✅ PASS
 
+---
+
 # Validation Summary
 
-| Test ID | Description | Status |
-|---------|-------------|--------|
+| Test ID | Validation Scenario | Status |
+|---------|----------------------|--------|
 | TC-01 | Normal User Behaviour | ✅ PASS |
 | TC-02 | Suspicious Behaviour Detection | ✅ PASS |
-| TC-03 | Attacker Detection & Access Restriction | ✅ PASS |
-| TC-04 | Critical Asset Detection | ✅ PASS |
-| TC-05 | Security Dashboard Monitoring | ✅ PASS |
+| TC-03 | Attacker Detection & Adaptive Response | ✅ PASS |
+| TC-04 | Critical Endpoint Protection | ✅ PASS |
+| TC-05 | Real-Time Security Dashboard Monitoring | ✅ PASS |
+
+---
+
+# Overall Validation Result
+
+All five validation scenarios were executed successfully. The Evolution-Aware Adaptive Cyber Defense framework demonstrated:
+
+- Legitimate user recognition
+- Progressive behavioural risk analysis
+- Suspicious activity detection
+- Attacker classification
+- Critical endpoint protection
+- Automatic access restriction (HTTP 403)
+- Real-time security dashboard monitoring
+
+**Overall Project Status:** : **VALIDATED**
