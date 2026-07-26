@@ -294,8 +294,98 @@ I built EvoSec because I realized something that most security systems completel
 
 ### Monitoring
 - `/dashboard-data` — Feeds the SOC dashboard with live user activity and classification data.
+---
+
+# Getting Started
+
+## Prerequisites
+
+- Python 3.10+
+- pip
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/<your-username>/<repository>.git
+cd <repository>
+```
+
+Install dependencies:
+
+```bash
+pip install fastapi uvicorn
+```
+
+## Run the Application
+
+Start the FastAPI server:
+
+```bash
+uvicorn main:app --reload
+```
+
+You should see output similar to:
+
+```text
+INFO:     Uvicorn running on http://127.0.0.1:8000
+```
+
+## Access the Application
+
+### Banking Application
+
+```
+http://127.0.0.1:8000/static/index.html
+```
+
+### Security Operations Dashboard
+
+```
+http://127.0.0.1:8000/static/dashboard.html
+```
 
 ---
+
+## Simulating User Behaviour
+
+### Normal User
+
+Perform:
+
+- Login
+- Search
+- Profile
+
+The dashboard should classify the session as **NORMAL**.
+
+---
+
+### Suspicious User
+
+Repeatedly access:
+
+- Admin Dashboard
+- Delete User
+
+The adaptive risk engine should classify the session as **SUSPICIOUS** and introduce a response delay.
+
+---
+
+### Attacker
+
+Without normal user behaviour, repeatedly access:
+
+- Admin Dashboard
+- Delete User
+- Transfer Money
+
+Once the cumulative risk threshold is exceeded:
+
+- User status changes to **ATTACKER**
+- Critical endpoints return **HTTP 403 – Access Denied**
+- Dashboard displays the threat in real time.
 
 ## What Makes This Different
 
