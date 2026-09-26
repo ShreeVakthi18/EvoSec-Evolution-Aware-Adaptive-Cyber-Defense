@@ -2,7 +2,7 @@
 
 > *"A user is not dangerous because of a single action — they are dangerous because of how they evolve, and where they choose to act."*
 
-A production-hardened FastAPI middleware that tracks how a user's behavior *evolves* across requests — rather than judging each request in isolation — and automatically identifies which endpoints are worth protecting, so it can adapt its response as risk rises: from silent monitoring, to friction, to blocking access to critical assets.
+A FastAPI middleware that tracks how a user's behavior *evolves* across requests — rather than judging each request in isolation — and automatically identifies which endpoints are worth protecting, so it can adapt its response as risk rises: from silent monitoring, to friction, to blocking access to critical assets.
 
 ---
 
