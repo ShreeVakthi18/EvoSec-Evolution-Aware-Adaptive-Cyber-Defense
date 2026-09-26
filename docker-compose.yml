@@ -1,0 +1,19 @@
+services:
+  eaacd:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # Behavioral state is in-memory per-process (see README "Limitations"),
+      # so keep a single worker/replica unless MAX_TRACKED_USERS-style state
+      # is moved to a shared backend.
+      WEB_CONCURRENCY: 1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=2)"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
